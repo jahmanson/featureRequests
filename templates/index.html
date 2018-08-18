@@ -4,48 +4,107 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}"> -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
   <title>Feature Request App</title>
 </head>
 <body>
   <div class="container">
-    <form method="POST" action="">
-      <div class="form-group">
-        <label for="title">Title</label>
-        <input type="text" class="form-control" name="title" id="title" placeholder="Enter title">
+  <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" id="addFeatureRequest" data-toggle="modal" data-target="#featureRequestModal">
+      Add Feature Request
+    </button>
+
+  <!-- DB Table Display -->
+    <div class="row">
+      <div class="col">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th width="auto" scope="col">Title</th>
+              <th width="400px" scope="col">Description</th>
+              <th width="auto" scope="col">Client</th>
+              <th width="75px" scope="col">Priority</th>
+              <th width="120px" scope="col">Target Date</th>
+              <th width="130px" scope="col">Product Area</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if requests %}
+              {% for request in requests %}
+                <tr data-request_id="{{ request.id }}">
+                  <td>{{ request.title }}</td>
+                  <td>{{ request.description }}</td>
+                  <td>{{ request.client }}</td>
+                  <td>{{ request.priority }}</td>
+                  <td>{{ request.target_date }}</td>
+                  <td>{{ request.product_area }}</td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="6">No Current Requests</td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
       </div>
-      <div class="form-group">
-        <label for="description">Description</label>
-        <textarea name="name" rows="8" cols="80" class="form-control" id="description" placeholder="Describe the request in detail"></textarea>
+    </div> <!-- End DB Table Display -->
+
+  <!-- Modal -->
+    <div class="modal fade" id="featureRequestModal" tabindex="-1" role="dialog" aria-labelledby="featureRequestModalTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="featureRequestModalTitle">Add Feature Request</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form method="POST">
+            <div class="modal-body">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="title" name="title" placeholder="Title">
+                </div>
+                <div class="form-group">
+                  <textarea class="form-control" id="description" name="description" rows="8" cols="80" placeholder="Description"></textarea>
+                </div>
+                <div class="form-group">
+                  <select class="form-control" id="client" name="client">
+                    <option value="Client A">Client A</option>
+                    <option value="Client B">Client B</option>
+                    <option value="Client C">Client C</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <input type="number" class="form-control" id="priority" name="priority" placeholder="Priority Number">
+                </div>
+                <div class="form-group">
+                  <input type="date" class="form-control" id="targetDate" name="target_date" placeholder="Target Date">
+                </div>
+                <div class="form-group">
+                  <select class="form-control" id="productArea" name="product_area">
+                    <option value="policies">Policies</option>
+                    <option value="billing">Billing</option>
+                    <option value="claims">Claims</option>
+                    <option value="reports">Reports</option>
+                  </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <input type="submit" class="btn btn-primary" id="submit" value="Submit">
+            </div>
+          </form>
+        </div>
       </div>
-      <div class="form-group">
-        <label for="client">Client</label>
-        <select name="client" class="form-control" id="client">
-          <option value="clientA">Client A</option>
-          <option value="clientB">Client B</option>
-          <option value="clientC">Client C</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="priority">Priority</label>
-        <input type="number" class="form-control" name="priority" id="priority">
-      </div>
-      <div class="form-group">
-        <label for="targetDate">Target Date</label>
-        <input type="date" class="form-control" name="targetDate" id="targetDate">
-      </div>
-      <div class="form-group">
-        <label for="productArea">Product Area</label>
-        <select name="productArea" class="form-control" id="productArea">
-          <option value="policies">Policies</option>
-          <option value="billing">Billing</option>
-          <option value="claims">Claims</option>
-          <option value="reports">Reports</option>
-        </select>
-      </div>
-      <input type="submit" class="btn btn-outline-success" value="Submit">
-    </form>
-  </div>
+    </div> <!-- End Modal -->
+  </div> <!-- End Main Container -->
+  <script src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}" ></script>
+  <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/knockout-3.4.2.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/form.js') }}"></script>
+  <!-- TODO: add in knockout js and data-binds in table -->
 </body>
 </html>
