@@ -10,10 +10,10 @@ $(document).ready(function() {
         targetDate: $('#targetDate').val(),
         productArea: $('#productArea').val()
       },
-      url: '/add_request',
+      url: '/requests/new',
       type: 'POST'
     }).done(function(data) {
-        
+
     }).fail(function() {
 
     }); //end of ajax

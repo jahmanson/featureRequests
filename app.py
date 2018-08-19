@@ -25,34 +25,52 @@ class Request(db.Model):
 
 @app.route('/')
 def index():
-    requests = Request.query.all()
-    return render_template('index.html', requests=requests)
+    return render_template('index.html')
 
-@app.route('/add_request', methods=['POST'])
+@app.route('/requests')
+def db_requests():
+    query_results = Request.query.all()
+    db_requests = [
+        dict(
+            title=result.title,
+            description=result.description,
+            client=result.client,
+            priority=result.priority,
+            target_date=result.target_date,
+            product_area=result.product_area
+        ) for result in query_results
+    ]
+    return jsonify(db_requests=db_requests)
+
+@app.route('/requests/new', methods=['POST'])
 def add_request():
-    form = request.form
-    max_priority = Request.query.filter_by(client=form['client']).order_by(Request.priority.desc()).first().priority
+    r_json = request.json
+    max_priority_item = Request.query.filter_by(client=r_json['client']).order_by(Request.priority.desc()).first()
 
-    if form['priority'] > max_priority+1:
-        priority = u'{}'.format(max_priority+1)
+    if max_priority_item:
+        max_priority = max_priority_item.priority
     else:
-        priority = form['priority']
+        max_priority = 0
 
-    update_requests = Request.query.filter(and_(Request.client==form['client'], Request.priority>=priority))
+    if int(r_json['priority']) > max_priority+1:
+        r_json['priority'] = unicode(max_priority+1)
+
+    update_requests = Request.query.filter(and_(Request.client==r_json['client'], Request.priority>=r_json['priority']))
     for update_request in update_requests:
         update_request.priority += 1
 
     new_request = Request(
-        title=form['title'],
-        description=form['description'],
-        client=form['client'],
-        priority=priority,
-        target_date=form['target_date'],
-        product_area=form['product_area']
+        title=r_json['title'],
+        description=r_json['description'],
+        client=r_json['client'],
+        priority=r_json['priority'],
+        target_date=r_json['target_date'],
+        product_area=r_json['product_area']
     )
+
     db.session.add(new_request)
     db.session.commit()
-    return jsonify({'Success':True, data: new_request})
+    return jsonify({'success'})
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -29,23 +29,15 @@
               <th width="130px" scope="col">Product Area</th>
             </tr>
           </thead>
-          <tbody>
-            {% if requests %}
-              {% for request in requests %}
-                <tr data-request_id="{{ request.id }}">
-                  <td>{{ request.title }}</td>
-                  <td>{{ request.description }}</td>
-                  <td>{{ request.client }}</td>
-                  <td>{{ request.priority }}</td>
-                  <td>{{ request.target_date }}</td>
-                  <td>{{ request.product_area }}</td>
-                </tr>
-              {% endfor %}
-            {% else %}
-              <tr>
-                <td colspan="6">No Current Requests</td>
-              </tr>
-            {% endif %}
+          <tbody data-bind="foreach: requests, visible: requests().length > 0">
+            <tr>
+              <td data-bind="text: title"></td>
+              <td data-bind="text: description"></td>
+              <td data-bind="text: client"></td>
+              <td data-bind="text: priority"></td>
+              <td data-bind="text: target_date"></td>
+              <td data-bind="text: product_area"></td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -61,29 +53,29 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <form method="POST">
+          <form data-bind="submit: addRequest">
             <div class="modal-body">
                 <div class="form-group">
-                  <input type="text" class="form-control" id="title" name="title" placeholder="Title">
+                  <input type="text" class="form-control" data-bind="value: newTitle" placeholder="Title">
                 </div>
                 <div class="form-group">
-                  <textarea class="form-control" id="description" name="description" rows="8" cols="80" placeholder="Description"></textarea>
+                  <textarea class="form-control" data-bind="value: newDescription" rows="8" cols="80" placeholder="Description"></textarea>
                 </div>
                 <div class="form-group">
-                  <select class="form-control" id="client" name="client">
+                  <select class="form-control" data-bind="value: newClient">
                     <option value="Client A">Client A</option>
                     <option value="Client B">Client B</option>
                     <option value="Client C">Client C</option>
                   </select>
                 </div>
                 <div class="form-group">
-                  <input type="number" class="form-control" id="priority" name="priority" placeholder="Priority Number">
+                  <input type="number" class="form-control" data-bind="value: newPriority" placeholder="Priority Number">
                 </div>
                 <div class="form-group">
-                  <input type="date" class="form-control" id="targetDate" name="target_date" placeholder="Target Date">
+                  <input type="date" class="form-control" data-bind="value: newTargetDate" placeholder="Target Date">
                 </div>
                 <div class="form-group">
-                  <select class="form-control" id="productArea" name="product_area">
+                  <select class="form-control" data-bind="value: newProductArea">
                     <option value="policies">Policies</option>
                     <option value="billing">Billing</option>
                     <option value="claims">Claims</option>
@@ -93,7 +85,7 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <input type="submit" class="btn btn-primary" id="submit" value="Submit">
+              <input type="submit" class="btn btn-primary" value="Submit">
             </div>
           </form>
         </div>
@@ -104,7 +96,6 @@
   <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/knockout-3.4.2.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/form.js') }}"></script>
-  <!-- TODO: add in knockout js and data-binds in table -->
+  <script src="{{ url_for('static', filename='js/requests.js') }}"></script>
 </body>
 </html>
